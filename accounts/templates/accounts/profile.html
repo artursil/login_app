@@ -1,0 +1,7 @@
+<h3>Hi {{user.username}}</h3>
+<h2>Favourite team: {{user.userprofile.fav_team}}</h2>
+<a href="{% url 'accounts:change_fav_team' username=user.username pk=user.userprofile.id %}">change_fav_team</a>
+<a href="{% url 'accounts:user_history' username=user.username %}"><h2>History</h2></a>
+<h2>Your tags</h2>
+
+{%include "accounts/_user_tags_list.html"%}

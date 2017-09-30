@@ -1,0 +1,11 @@
+<h3>{{user.username}} history</h3>
+{% if news_list.all%}
+
+
+  {% for news in news_list %}
+      <p><a href="{{ news.news.news_url }}">{{news.news.title}}</a></p>
+
+  {% endfor %}
+{% else %}
+<p>You haven't seen any news yet.</p>
+{% endif %}

@@ -1,0 +1,73 @@
+
+
+{% block pregroup %}
+{{test}}
+{% if user.is_authenticated %}
+    {% for news in news_list %}
+      {% if not news.tweet and not news.fb_post%}
+        <a href="{% url 'news:add_to_post' username=user.username pk=news.pk %}" target="_blank">
+          <h1 class="wtf">{{news.title}}</h1>
+          <p>{{news.text}}</p>
+          <img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+          <p>{{news.team.league}}</p>
+          </a>
+
+          {% for tag in news.news_tags.all %}
+          <a href="{% url 'tags:tags_news' slug=tag.slug %}">{{tag.tag_name}}</a> &nbsp;&nbsp;
+          {% endfor %}
+      {% endif %}
+      {% if news.tweet %}
+        <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">{{news.text}}
+          {% for tag in  news.news_tags.all %}
+           <a href="https://twitter.com/hashtag/{{tag.tag_name}}?src=hash">#{{tag.tag_name}}</a>
+          {% endfor %}
+           <a href="https://t.co/Ix1GrNtiJT">pic.twitter.com/Ix1GrNtiJT</a></p>&mdash; {{news.social_source}} <a href="{{news.news_url}}">6 lipca 2017</a></blockquote>
+        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <!-- <a class="list-group-item" href="{{ news.news_url }}" target="_blank">
+          <h1 class="wtf">{{news.title}}</h1>
+          <p>{{news.text}}</p>
+          <img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+          <p>{{news.team.league}}</p>
+        </a> -->
+        <!-- <img src="{{news.image}}" alt="sdfdsf"> -->
+      {% endif %}
+      {% if news.fb_post%}
+        <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2F{{news.social_source}}%2Fposts%2F{{news.text}}%3A0&width=500" width="500" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+      {% endif %}
+
+    {% endfor %}
+{% else %}
+    {% for news in news_list %}
+        {% if not news.tweet and not news.fb_post%}
+            <a href="{{news.news_url}}" target="_blank">
+              <h1 class="wtf"rl{news.title}}</h1>
+              <p>{{news.text}}</p>
+              <img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+              <p>{{news.team.league}}</p>
+              </a>
+
+              {% for tag in news.news_tags.all %}
+                  <a href="{% url 'tags:tags_news' slug=tag.slug %}">{{tag.tag_name}}</a> &nbsp;&nbsp;
+              {% endfor %}
+          {% endif %}
+    {% endfor %}
+{% endif %}
+
+<br><br>
+{% if is_paginated %}
+      <div class="pagination">
+          <span class="page-links">
+              {% if page_obj.has_previous %}
+                  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+              {% endif %}
+              <span class="page-current">
+                  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+              </span>
+              {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}">next</a>
+              {% endif %}
+          </span>
+      </div>
+
+{% endif %}
+{% endblock %}

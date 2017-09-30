@@ -1,0 +1,100 @@
+
+
+{% block pregroup %}
+
+{% if user.is_authenticated %}
+	{% if news_list%}
+		{% if tag.slug != user.userprofile.fav_team.slug%}
+			{% if user in tag_users.all %}
+				{% if negative %}
+					You are not interested in {{tag.tag_name}} news !
+					<a href="{% url 'tags:tag_delete' slug=tag.slug %}" class="btn btn-lg btn-fill btn-warning"><span class="glyphicon glyphicon-ok-circle"></span> Change it </a>
+				{% else %}
+					You've added {{tag.tag_name}} news to your favourites !
+					<a href="{% url 'tags:tag_delete' slug=tag.slug %}" class="btn btn-lg btn-fill btn-warning"><span class="glyphicon glyphicon-ok-circle"></span> Change it </a>
+				{% endif %}
+			{% else %}
+				<a href="{% url 'tags:tag_add' slug=tag.slug negative=False %}" class="btn btn-lg btn-fill btn-warning"><span class="glyphicon glyphicon-ok-circle"></span> Add to favourites</a>
+				<a href="{% url 'tags:tag_add' slug=tag.slug negative=True %}" class="btn btn-lg btn-fill btn-warning"><span class="glyphicon glyphicon-ok-circle"></span> Add to "not interested"</a>
+			{% endif %}
+		{%else%}
+		<p>Your team: {{user.userprofile.fav_team.name}}</p>
+		{%endif%}
+
+	    {% for news in news_list %}
+
+	        <a href="{% url 'news:add_to_post' username=user.username pk=news.pk %}" target="_blank">
+	          <h1 class="wtf">{{news.title}}</h1>
+	          <p>{{news.text}}</p>
+	          <img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+	          <p>{{news.team.league}}</p>
+	          </a>
+	          <!-- {% for league in news.team.league.all %}
+	          <a href="#">{{league.name}}</a> &nbsp;&nbsp;
+	          {% endfor %}
+	          {% for team in news.team.all %}
+	          <a href="#">{{team.name}}</a> &nbsp;&nbsp;
+	          {% endfor %} -->
+	          {% for tag in news.news_tags.all %}
+	          <a href="{% url 'tags:tag_redirect' slug=tag.slug %}">{{tag.tag_name}}</a> &nbsp;&nbsp;
+	          {% endfor %}
+
+	        <!-- <a class="list-group-item" href="{{ news.news_url }}" target="_blank">
+	          <h1 class="wtf">{{news.title}}</h1>
+	          <p>{{news.text}}</p>
+	          <img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+	          <p>{{news.team.league}}</p>
+	        </a> -->
+	        <!-- <img src="{{news.image}}" alt="sdfdsf"> -->
+
+	    {% endfor %}
+		{% else %}
+			<h1>Sorry but it seems, that there are no news for this tag :(</h1>
+		{% endif %}
+{% else %}
+{% if news_list%}
+		{% for news in news_list %}
+
+				<a href="{{ news.news_url }}" target="_blank">
+					<h1 class="wtf">{{news.title}}</h1>
+					<p>{{news.text}}</p>
+					<img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+					<p>{{news.team.league}}</p>
+					</a>
+					{% for tag in news.news_tags.all %}
+					<a href="{% url 'tags:tags_news' slug=tag.slug %}">{{tag.tag_name}}</a> &nbsp;&nbsp;
+					{% endfor %}
+
+				<!-- <a class="list-group-item" href="{{ news.news_url }}" target="_blank">
+					<h1 class="wtf">{{news.title}}</h1>
+					<p>{{news.text}}</p>
+					<img style="height:200px;width:400px"; src="{{news.image_url}}" class="news_img img-thumbnail ">
+					<p>{{news.team.league}}</p>
+				</a> -->
+				<!-- <img src="{{news.image}}" alt="sdfdsf"> -->
+
+		{% endfor %}
+	{% else %}
+		<h1>Sorry but it seems, that this tag doesn't exist :(</h1>
+	{% endif %}
+{% endif %}
+
+
+
+
+{% if is_paginated %}
+		      <div class="pagination">
+		          <span class="page-links">
+		              {% if page_obj.has_previous %}
+		                  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+		              {% endif %}
+		              <span class="page-current">
+		                  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+		              </span>
+		              {% if page_obj.has_next %}
+		                  <a href="?page={{ page_obj.next_page_number }}">next</a>
+		              {% endif %}
+		          </span>
+		      </div>
+		{% endif %}
+{% endblock %}

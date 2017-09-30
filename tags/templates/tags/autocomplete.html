@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load humanize %}
+
+<ul>
+{% if tags %}
+    <li><em>{% trans 'Tags' %}</em></li>
+    {% for tag in tags %}
+        <li class="tag">
+            <a href="{% url 'tags:tags_news' slug=tag.slug %}">
+                {{ tag.tag_name}}
+            </a>
+        </li>
+    {% endfor %}
+{% endif %}
+
+
+</ul>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Star Social</title>
+    <!-- Latest compiled and minified CSS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <script type="text/javascript">
+    $(function(){
+
+        $('#search').keyup(function(){
+            console.log("dziala");
+            $.ajax({
+                type: "POST",
+                url: "/tags/search/",
+                data: {
+                    'search_text': $('#search').val(),
+                    'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val()
+                },
+                success: searchSuccess,
+                dataType: 'html'
+
+            });
+
+        });
+    });
+    function searchSuccess(data, textStatus, jqXHR)
+    {
+        $('#search-results').html(data);
+    }
+    function slugify(text)
+      {
+        return text.toString().toLowerCase()
+          .replace(/\s+/g, '-')           // Replace spaces with -
+          .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+          .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+          .replace(/^-+/, '')             // Trim - from start of text
+          .replace(/-+$/, '');            // Trim - from end of text
+      }
+      $(document).ready(function() {
+        $("#search").keydown(function(event){
+          if(event.keyCode == 13) {
+            event.preventDefault();
+            generateUrl()
+          return false;
+      }
+      });
+    });
+    function generateUrl(){
+      console.log("cos")
+	     var x = document.querySelector("[list='search-results']").value.toString().toLowerCase()
+         .replace(/\s+/g, '-')           // Replace spaces with -
+         .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+         .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+         .replace(/^-+/, '')             // Trim - from start of text
+         .replace(/-+$/, '');
+
+      var link= "{% url 'tags:tag_redirect' slug='tmp' %}";
+      link = link.replace('tmp', x)
+      if(x.length>0){
+        window.location.href = link;
+      }
+
+       document.querySelector("[list='search-results']").value="";
+      //  window.location.href = "/tags/"+x;
+
+
+       }
+
+    </script>
+    <style>
+    input::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+    </style>
+  </head>
+
+
+  <body>
+
+    <nav class="navbar  mynav" role="navigation" id="navbar">
+    			<div class="container">
+
+            <a class="navbar-brand mynav" href="{% url 'home' %}">Star Social</a>
+
+            <!-- <input type="text" id="id_input"> -->
+            <datalist id="search-results">
+
+            </datalist>
+    					<ul class="nav navbar-nav navbar-right">
+    						{% if user.is_authenticated %}
+                      <li>
+                      <div class="col-lg-4">
+                      <div class="input-group">
+
+                      <form name="leform" onsubmit="return generateLink();">
+                        {% csrf_token %}
+                      <input type="text" class="form-control" id="search"  name="search" list="search-results" placeholder="Search tags" >
+                      <span class="input-group-btn">
+                          <button class="btn btn-default" type="button" id="search-btn" onclick="generateUrl()">Go!</button>
+                      </span>
+                      </div>
+                      </div>
+                      </li>
+                      <li><a href="{% url 'posts:create' %}" class="btn btn-simple">Post</a></li>
+                      <li><a href="{% url 'groups:all' %}" class="btn btn-simple">Groups</a></li>
+                      <li><a href="{% url 'news:for_user' username=user.username %}" class="btn btn-simple">News</a></li>
+                      <!-- <li><a href="{% url 'news:all' %}" class="btn btn-simple">News</a></li> -->
+                      <li><a href="{% url 'groups:create' %}" class="btn btn-simple">Create Group</a></li>
+                      <li><a href="{% url 'accounts:user_tags' username=user.username %}" class="btn btn-simple">Profile</a></li>
+                      <li><a href="{% url 'accounts:logout' %}" class="btn btn-simple">Log out</a></li>
+    						{% else %}
+    						      <li><a href="{% url 'groups:all' %}"class="btn btn-simple">Groups</a></li>
+                      <li><a href="{% url 'news:all' %}" class="btn btn-simple">News</a></li>
+    						      <li><a href="{% url 'accounts:login' %}" class="btn btn-simple">Log in</a></li>
+    						      <li><a href="{% url 'accounts:signup' %}" class="btn btn-simple">Sign up</a></li>
+    						{% endif %}
+    					</ul>
+
+
+
+    			</div>
+    		</nav>
+        <div class="container mycontent">
+          {% block content %}
+
+          {% endblock %}
+
+        </div>
+
+
+
+<canvas id="canvas"></canvas>
+
+
+
+  </body>
+
+</html>

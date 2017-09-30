@@ -1,0 +1,23 @@
+{% extends "news/news_base.html" %}
+
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="{% static 'simplesocial/css/master.css'%}">
+  </head>
+  <body>
+    {% for news in news_list %}
+    <a class="list-group-item" href="{{ news.news_url }}">
+      <h1 class="wtf">{{news.title}}</h1>
+      <p>{{news.text}}</p>
+
+      <p>{{news.team.league}}</p>
+    </a>
+    <!-- <img src="{{news.image}}" alt="sdfdsf"> -->
+    <img src="{{news.image_url}}" class="news_img  ">
+    {% endfor %}
+  </body>
+</html>

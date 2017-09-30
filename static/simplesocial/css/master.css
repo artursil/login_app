@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  overflow: scroll;
+  background-color: black;
+  color:white;
+}
+
+
+.news_img{
+    width:500px; /* you can use % */
+    height: auto;
+}
+h1{
+  color:white;
+}
+.wtf {
+  color:red;
+
+}

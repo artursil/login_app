@@ -1,0 +1,11 @@
+{% if tags.count > 0 %}
+
+{% for tag in tags %}
+  <option value="{{tag.tag_name}}">
+{% endfor %}
+
+{% else %}
+
+<li> None to show </li>
+
+{% endif %}

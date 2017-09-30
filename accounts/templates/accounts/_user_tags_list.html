@@ -1,0 +1,36 @@
+{% if tags.all%}
+  <table class=tags_table>
+  <tr>
+    <h3>Favourite tags</h3>
+  </tr>
+  {% for tag in tags %}
+    {% if not tag.negative %}
+      {% if user.userprofile.fav_team.name != tag.tag.tag_name%}
+        <tr>
+          <td><a href="{% url 'tags:tags_news' slug=tag.tag.slug %}">{{tag.tag.tag_name}}</a></td>
+          <td><a href="{% url 'accounts:user_tag_delete' username=user.username slug=tag.tag.slug %}">Delete</a></td>
+
+        </tr>
+        {% endif %}
+    {% endif %}
+  {% endfor %}
+  </table>
+  <table class=tags_table>
+  <tr>
+    <h3>"Not interested" tags</h3>
+  </tr>
+  {% for tag in tags %}
+    {% if tag.negative %}
+      {% if user.userprofile.fav_team.name != tag.tag.tag_name%}
+        <tr>
+          <td><a href="{% url 'tags:tags_news' slug=tag.tag.slug %}">{{tag.tag.tag_name}}</a></td>
+          <td><a href="{% url 'accounts:user_tag_delete' username=user.username slug=tag.tag.slug %}">Delete</a></td>
+
+        </tr>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  </table>
+{% else %}
+<p>You haven't add additional tags yet. Please use search engine to add them.</p>
+{% endif %}
