@@ -1,7 +1,7 @@
 from django import forms
 
 from posts import models
-
+asdasd
 
 class PostForm(forms.ModelForm):
     class Meta:
